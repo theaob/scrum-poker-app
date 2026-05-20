@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="Real-time multiplayer scrum poker for agile teams. Create a room, vote on story points, and reveal estimates together.">
+  <meta name="theme-color" content="#0a0e1a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>Scrum Poker — Multiplayer Estimation</title>
+  <link rel="stylesheet" href="/css/styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🃏</text></svg>">
+</head>
+<body>
+  <!-- Toast Container -->
+  <div id="toast-container" class="toast-container"></div>
+  
+  <!-- Connection Status -->
+  <div id="connection-status" class="connection-status">
+    ⚡ Reconnecting...
+  </div>
+
+  <div id="app">
+    
+    <!-- ========== HOME SCREEN ========== -->
+    <div id="screen-home" class="screen">
+      <div class="logo">
+        <span class="logo__icon">🃏</span>
+        <h1 class="logo__title">Scrum Poker</h1>
+        <p class="logo__subtitle">Real-time estimation</p>
+      </div>
+
+      <div style="flex: 1;"></div>
+
+      <div class="btn-group" style="padding-bottom: var(--space-2xl);">
+        <button id="btn-create" class="btn btn--primary">
+          ✨ Create Room
+        </button>
+        <button id="btn-join" class="btn btn--secondary">
+          🚀 Join Room
+        </button>
+      </div>
+    </div>
+
+    <!-- ========== CREATE ROOM SCREEN ========== -->
+    <div id="screen-create" class="screen">
+      <div class="room-header">
+        <button data-back="screen-home" class="btn btn--icon btn--secondary">←</button>
+        <h2 style="font-size: var(--font-size-lg); font-weight: 700; flex: 1;">Create Room</h2>
+      </div>
+
+      <div class="glass-panel mt-md">
+        <div class="form-group mb-lg">
+          <label class="form-label" for="create-name">Your Name</label>
+          <input type="text" id="create-name" class="form-input" placeholder="Enter your name" maxlength="20" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Estimation Scale</label>
+          <div id="scale-selector" class="scale-selector">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+
+      <div style="flex: 1;"></div>
+
+      <div class="btn-group" style="padding-bottom: var(--space-lg);">
+        <button id="btn-create-room" class="btn btn--primary">
+          ✨ Create & Start
+        </button>
+      </div>
+    </div>
+
+    <!-- ========== JOIN ROOM SCREEN ========== -->
+    <div id="screen-join" class="screen">
+      <div class="room-header">
+        <button data-back="screen-home" class="btn btn--icon btn--secondary">←</button>
+        <h2 style="font-size: var(--font-size-lg); font-weight: 700; flex: 1;">Join Room</h2>
+      </div>
+
+      <div class="glass-panel mt-md">
+        <div class="form-group mb-lg">
+          <label class="form-label" for="join-name">Your Name</label>
+          <input type="text" id="join-name" class="form-input" placeholder="Enter your name" maxlength="20" autocomplete="off">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="join-code">Room Code</label>
+          <input type="text" id="join-code" class="form-input form-input--code" placeholder="ABCD" maxlength="4" autocomplete="off" spellcheck="false">
+        </div>
+      </div>
+
+      <div style="flex: 1;"></div>
+
+      <div class="btn-group" style="padding-bottom: var(--space-lg);">
+        <button id="btn-join-room" class="btn btn--primary">
+          🚀 Join Room
+        </button>
+      </div>
+    </div>
+
+    <!-- ========== ROOM SCREEN ========== -->
+    <div id="screen-room" class="screen">
+      <!-- Header -->
+      <div class="room-header">
+        <div id="room-code-display" class="room-code">
+          <span class="room-code__label">Room</span>
+          <span id="room-code-value" class="room-code__value">----</span>
+          <span class="room-code__copy">📋</span>
+        </div>
+        <button id="btn-leave" class="btn btn--secondary btn--small">Leave</button>
+      </div>
+
+      <!-- Topic -->
+      <div class="topic-bar">
+        <span class="topic-bar__icon">📌</span>
+        <span id="topic-text" class="topic-bar__text topic-bar__text--empty">No topic set</span>
+      </div>
+
+      <!-- Players -->
+      <div class="players-section">
+        <div class="players-section__title">
+          Players — <span id="player-count">0</span>
+        </div>
+        <div id="players-grid" class="players-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Cards -->
+      <div class="cards-section">
+        <div class="cards-section__title">Pick your estimate</div>
+        <div id="cards-grid" class="cards-grid">
+          <!-- Rendered by JS -->
+        </div>
+      </div>
+
+      <!-- Results (shown after reveal) -->
+      <div id="results-section"></div>
+
+      <!-- Host Actions -->
+      <div id="host-actions" class="actions-bar" style="display: none;">
+        <div class="form-group mb-md">
+          <input type="text" id="topic-input" class="form-input" placeholder="Topic / Story (optional)" maxlength="100" autocomplete="off">
+        </div>
+        <div class="btn-group btn-group--row">
+          <button id="btn-reveal" class="btn btn--primary btn--small" disabled>
+            Reveal Votes (0/0)
+          </button>
+          <button id="btn-new-round" class="btn btn--secondary btn--small">
+            New Round
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/cards.js"></script>
+  <script src="/js/ui.js"></script>
+  <script src="/js/socket.js"></script>
+  <script src="/js/app.js"></script>
+</body>
+</html>
